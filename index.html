@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sri Lanka Electricity Bill Calculator 2025</title>
+    <link rel="icon" href="lightbulb.png" type="image/png" />
+
+    <style>
+      body {
+        font-family: "poppins";
+        margin: 0;
+        padding: 20px;
+        background-color: #000000;
+        max-width: 100%;
+      }
+
+      body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url(elecbg.jpg) no-repeat center center/cover;
+        filter: blur(5px);
+        z-index: -1;
+      }
+
+      body::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: -1;
+      }
+
+      .container {
+        background-color: rgb(255, 255, 255);
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        margin: 0 auto;
+        box-sizing: border-box;
+      }
+
+      h2 {
+        text-align: center;
+        font-size: 1.5rem;
+      }
+
+      .step {
+        display: none;
+      }
+
+      .step.active {
+        display: block;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+
+      select,
+      input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+      }
+
+      button {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 5px;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      .result-popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        z-index: 1000;
+        width: 90%;
+        max-width: 400px;
+      }
+
+      .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        z-index: 999;
+      }
+
+      .rate-table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+        display: none;
+      }
+
+      .rate-table.active {
+        display: table;
+      }
+
+      th,
+      td {
+        padding: 8px;
+        text-align: left;
+        border: 1px solid #ddd;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+
+      .navigation-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+      }
+
+      .time-based-inputs {
+        display: none;
+      }
+
+      .time-based-inputs.active {
+        display: block;
+      }
+
+      .subcategory-select {
+        display: none;
+      }
+
+      .subcategory-select.active {
+        display: block;
+      }
+
+      footer {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+        color: #ffffff;
+        text-decoration: none;
+      }
+
+      footer a {
+        text-decoration: none;
+        color: white;
+      }
+
+      footer a:hover {
+        color: #45a049;
+      }
+
+      h2 img {
+        vertical-align: middle;
+        margin-right: 10px;
+        width: 30px;
+        height: 30px;
+      }
+
+      /* Notice banner */
+      .notice-banner {
+        background-color: #5a0303;
+        color: white;
+        font-family: "poppins";
+        padding: 10px;
+        text-align: center;
+        font-size: 15px;
+        position: fixed;
+        top: -100px;
+        left: 0;
+        width: 100%;
+        height: 20px;
+        z-index: 1000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        animation: slideIn 0.5s forwards, colorChange 1.5s infinite,
+          widthExpand 3s infinite;
+        overflow: hidden;
+      }
+
+      @keyframes colorChange {
+        0% {
+          color: white;
+        }
+        50% {
+          color: yellow;
+        }
+        100% {
+          color: white;
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          top: -100px;
+        }
+        to {
+          top: 0;
+        }
+      }
+
+      .cls-btn {
+        background-color: transparent;
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 1001;
+        position: absolute;
+        right: 10px;
+        top: 4px;
+      }
+
+      @keyframes fadeOut {
+        from {
+          opacity: 1;
+        }
+        to {
+          opacity: 0;
+        }
+      }
+
+      .notice-banner.fade-out {
+        animation: fadeOut 0.5s forwards;
+      }
+
+      #datetime {
+        font-family: "Arial", sans-serif;
+        font-size: 18px;
+        color: #333;
+        background-color: #f2f2f2;
+        padding: 10px 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      @media (max-width: 768px) {
+        .result-popup {
+          width: 85%; /* Adjust width for tablets */
+          max-width: 350px;
+          padding: 15px; /* Slightly reduce padding */
+        }
+      }
+
+      @media (max-width: 480px) {
+        .result-popup {
+          width: 90%; /* Full width on small mobile screens */
+          max-width: 300px;
+          padding: 10px; /* Further reduce padding */
+        }
+      }
+
+      @media (max-width: 375px) {
+        .result-popup {
+          width: 90%; /* Keep it small and well centered */
+          max-width: 280px;
+          padding: 8px; /* Minimized padding for very small screens */
+        }
+      }
+
+      @media (max-width: 768px) {
+        #datetime {
+          font-size: 14px; /* Slightly smaller font for tablets */
+          padding: 8px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        footer {
+          font-size: 12px; /* Smaller font size for tablets */
+        }
+
+        footer .footer-content {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        footer .social-links {
+          justify-content: center;
+          margin-top: 10px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        footer {
+          padding: 15px;
+          font-size: 10px; /* Even smaller font for mobile */
+        }
+
+        footer .social-links a {
+          font-size: 14px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .notice-banner {
+          font-size: 1px; /* Slightly smaller font for tablets */
+          padding: 8px; /* Adjust padding for smaller screens */
+          height: 25px; /* Increase height slightly for readability */
+        }
+      }
+
+      @media (max-width: 480px) {
+        .notice-banner {
+          font-size: 13px;
+          padding: 11px;
+          height: 30px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        #datetime {
+          font-size: 10px; /* Even smaller font size for mobile */
+          padding: 6px;
+          flex-direction: column; /* Stack date and time vertically on smaller screens */
+          text-align: center; /* Center the content */
+        }
+      }
+
+      /* Responsive styles */
+      @media (max-width: 768px) {
+        .container {
+          padding: 10px;
+        }
+
+        h2 {
+          font-size: 1.2rem;
+        }
+
+        .form-group {
+          margin-bottom: 12px;
+        }
+
+        button {
+          width: 100%;
+          padding: 12px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .cls-btn {
+          font-size: 10px; /* Slightly smaller font for tablets */
+          right: 10px; /* Adjust right position for smaller screens */
+        }
+      }
+
+      @media (max-width: 480px) {
+        .cls-btn {
+          font-size: 18px; /* Smaller font size for mobile */
+          right: 10px; /* Adjust right position for mobile */
+          align-items: center;
+        }
+        .notice-banner {
+          font-size: 13px;
+          padding: 11px;
+          height: 30px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .rate-table {
+          font-size: 10px;
+        }
+
+        .rate-table th,
+        .rate-table td {
+          padding: 4px;
+        }
+
+        .navigation-buttons button {
+          width: 48%;
+          padding: 10px;
+        }
+
+        .notice-banner {
+          font-size: 13px;
+          padding: 11px;
+          height: 30px;
+        }
+      }
+
+      /* Further adjustments for mobile */
+      @media (max-width: 480px) {
+        h2 {
+          font-size: 1rem;
+        }
+
+        .form-group input,
+        .form-group select {
+          padding: 8px;
+        }
+
+        .container {
+          padding: 18px;
+        }
+      }
+
+      /* Default button styles */
+      button {
+        width: 100%;
+        padding: 12px;
+      }
+
+      /* Default .cls-btn styles */
+      .cls-btn {
+        font-size: 16px; /* Default font size */
+      }
+
+      /* Media query for mobile devices */
+      @media (max-width: 768px) {
+        button {
+          width: 100%;
+          padding: 10px; /* Adjust padding for mobile */
+        }
+
+        .cls-btn {
+          font-size: 14px; /* Adjust font size for mobile */
+        }
+      }
+
+      /* Default notice-banner styles */
+      .notice-banner {
+        background-color: #5a0303;
+        color: white;
+        font-family: "poppins";
+        padding: 10px;
+        text-align: center;
+        font-size: 16px;
+        position: fixed;
+        top: -100px;
+        left: 0;
+        width: 100%;
+        height: 20px;
+        z-index: 1000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        animation: slideIn 0.5s forwards, colorChange 1.5s infinite,
+          widthExpand 3s infinite;
+        overflow: hidden;
+      }
+
+      /* Default .cls-btn styles */
+      .cls-btn {
+        background-color: transparent;
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 1001;
+        position: absolute;
+        right: 90px;
+        top: 4px;
+      }
+
+      /* Media query for tablets */
+      @media (max-width: 768px) {
+        .notice-banner {
+          font-size: 11px; /* Adjust font size for tablets */
+          padding: 8px; /* Adjust padding for tablets */
+          height: 25px; /* Adjust height for tablets */
+        }
+
+        .cls-btn {
+          font-size: 18px; /* Adjust font size for tablets */
+          right: 80px; /* Adjust right position for tablets */
+          top: 7.7px;
+        }
+      }
+
+      /* Media query for mobile devices */
+      @media (max-width: 480px) {
+        .notice-banner {
+          font-size: 10px; /* Adjust font size for mobile */
+          padding: 6px; /* Adjust padding for mobile */
+          height: 30px; /* Adjust height for mobile */
+        }
+
+        .cls-btn {
+          font-size: 18px; /* Adjust font size for mobile */
+          right: 50px; /* Adjust right position for mobile */
+          top: 7.7px;
+        }
+      }
+
+      /* Keyframes for animations */
+      @keyframes colorChange {
+        0% {
+          color: white;
+        }
+        50% {
+          color: yellow;
+        }
+        100% {
+          color: white;
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          top: -100px;
+        }
+        to {
+          top: 0;
+        }
+      }
+
+      @keyframes fadeOut {
+        from {
+          opacity: 1;
+        }
+        to {
+          opacity: 0;
+        }
+      }
+
+      .notice-banner.fade-out {
+        animation: fadeOut 0.5s forwards;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2 style="text-align: center">
+        Sri Lanka Electricity Bill Calculator 2025
+        <img src="world-flag.png" alt="" />
+      </h2>
+
+      <!-- Step 1: Category Selection -->
+      <div class="step active" id="step1">
+        <h3>Step 1: Select Customer Category</h3>
+        <div class="form-group">
+          <label for="category">Customer Category:</label>
+          <select id="category" onchange="showRateTable()">
+            <option value="">Select a category</option>
+            <option value="domestic">Domestic</option>
+            <option value="domestic-time">Domestic - Time Based</option>
+            <option value="religious">
+              Religious & Charitable Institutions
+            </option>
+            <option value="hotel">Hotel</option>
+            <option value="industrial">Industrial</option>
+            <option value="general">General Purpose</option>
+            <option value="government">Government</option>
+          </select>
+        </div>
+
+        <!-- Subcategory selections -->
+        <div id="industrialSubcategory" class="subcategory-select">
+          <label for="industrialType">Select Industrial Category:</label>
+          <select id="industrialType">
+            <option value="i1">Industrial 1 (≤ 300 units)</option>
+            <option value="i2">Industrial 2</option>
+            <option value="i3">Industrial 3</option>
+          </select>
+        </div>
+
+        <div id="hotelSubcategory" class="subcategory-select">
+          <label for="hotelType">Select Hotel Category:</label>
+          <select id="hotelType">
+            <option value="h1">Hotel 1 (≤ 300 units)</option>
+            <option value="h2">Hotel 2</option>
+            <option value="h3">Hotel 3</option>
+          </select>
+        </div>
+
+        <div id="generalSubcategory" class="subcategory-select">
+          <label for="generalType">Select General Purpose Category:</label>
+          <select id="generalType">
+            <option value="gp1">General Purpose 1 (≤ 180 units)</option>
+            <option value="gp2">General Purpose 2</option>
+            <option value="gp3">General Purpose 3</option>
+          </select>
+        </div>
+
+        <div id="governmentSubcategory" class="subcategory-select">
+          <label for="govType">Select Government Category:</label>
+          <select id="govType">
+            <option value="g1">Government 1 (≤ 180 units)</option>
+            <option value="g2">Government 2</option>
+            <option value="g3">Government 3</option>
+          </select>
+        </div>
+
+        <button onclick="nextStep()">Next</button>
+      </div>
+
+      <!-- Step 2: Meter Readings -->
+      <div class="step" id="step2">
+        <h3>Step 2: Enter Meter Readings</h3>
+        <div class="form-group">
+          <label for="pmr">Previous Month Reading:</label>
+          <input type="number" id="pmr" required />
+        </div>
+        <div class="form-group">
+          <label for="cmr">Current Month Reading:</label>
+          <input type="number" id="cmr" required />
+        </div>
+
+        <!-- Time-based inputs -->
+        <div class="time-based-inputs" id="timeBasedInputs">
+          <h4>Enter Time-based Readings</h4>
+          <div class="form-group">
+            <label for="dayUnits">Day Time Units (05:30 – 18:30):</label>
+            <input type="number" id="dayUnits" />
+          </div>
+          <div class="form-group">
+            <label for="peakUnits">Peak Time Units (18:30 – 22:30):</label>
+            <input type="number" id="peakUnits" />
+          </div>
+          <div class="form-group">
+            <label for="offPeakUnits">Off-Peak Units (22:30 – 05:30):</label>
+            <input type="number" id="offPeakUnits" />
+          </div>
+        </div>
+
+        <div class="navigation-buttons">
+          <button onclick="previousStep()">Previous</button>
+          <button onclick="calculateBill()">Calculate Bill</button>
+        </div>
+      </div>
+
+      <!-- Rate Tables -->
+      <div id="rateTables">
+        <!-- Domestic Rate Table -->
+        <table class="rate-table" id="domesticTable">
+          <tr>
+            <th colspan="3">Domestic Rates</th>
+          </tr>
+          <tr>
+            <th>Units (kWh)</th>
+            <th>Rate (Rs/kWh)</th>
+            <th>Fixed Charge (Rs)</th>
+          </tr>
+          <tr>
+            <td>0-30</td>
+            <td>4.00</td>
+            <td>75.00</td>
+          </tr>
+          <tr>
+            <td>31-60</td>
+            <td>6.00</td>
+            <td>200.00</td>
+          </tr>
+          <tr>
+            <td>61-90</td>
+            <td>14.00</td>
+            <td>400.00</td>
+          </tr>
+          <tr>
+            <td>91-120</td>
+            <td>20.00</td>
+            <td>1,000.00</td>
+          </tr>
+          <tr>
+            <td>121-180</td>
+            <td>33.00</td>
+            <td>1,500.00</td>
+          </tr>
+          <tr>
+            <td>>180</td>
+            <td>52.00</td>
+            <td>2,000.00</td>
+          </tr>
+        </table>
+
+        <!-- Religious Rate Table -->
+        <table class="rate-table" id="religiousTable">
+          <tr>
+            <th colspan="3">Religious & Charitable Rates</th>
+          </tr>
+          <tr>
+            <th>Units (kWh)</th>
+            <th>Rate (Rs/kWh)</th>
+            <th>Fixed Charge (Rs)</th>
+          </tr>
+          <tr>
+            <td>0-30</td>
+            <td>4.50</td>
+            <td>75.00</td>
+          </tr>
+          <tr>
+            <td>31-90</td>
+            <td>4.50</td>
+            <td>200.00</td>
+          </tr>
+          <tr>
+            <td>91-120</td>
+            <td>6.50</td>
+            <td>300.00</td>
+          </tr>
+          <tr>
+            <td>121-180</td>
+            <td>15.00</td>
+            <td>1,200.00</td>
+          </tr>
+          <tr>
+            <td>>180</td>
+            <td>23.00</td>
+            <td>1,600.00</td>
+          </tr>
+        </table>
+
+        <!-- Industrial Rate Tables -->
+        <table class="rate-table" id="industrialTable">
+          <tr>
+            <th colspan="4">Industrial Rates</th>
+          </tr>
+          <tr>
+            <th>Category</th>
+            <th>Unit Range</th>
+            <th>Rate (Rs/kWh)</th>
+            <th>Fixed Charge (Rs)</th>
+          </tr>
+          <tr>
+            <td>I-1</td>
+            <td>≤ 300</td>
+            <td>7.00</td>
+            <td>250.00</td>
+          </tr>
+          <tr>
+            <td>I-1</td>
+            <td>> 300</td>
+            <td>13.00</td>
+            <td>750.00</td>
+          </tr>
+          <tr>
+            <td>I-2 Day</td>
+            <td>All units</td>
+            <td>13.00</td>
+            <td>5,000.00</td>
+          </tr>
+          <tr>
+            <td>I-2 Peak</td>
+            <td>All units</td>
+            <td>23.00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td>I-2 Off-Peak</td>
+            <td>All units</td>
+            <td>11.00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td>I-3 Day</td>
+            <td>All units</td>
+            <td>12.00</td>
+            <td>5,000.00</td>
+          </tr>
+          <tr>
+            <td>I-3 Peak</td>
+            <td>All units</td>
+            <td>22.00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td>I-3 Off-Peak</td>
+            <td>All units</td>
+            <td>10.00</td>
+            <td>-</td>
+          </tr>
+        </table>
+
+        <!-- Hotel Rate Tables -->
+        <table class="rate-table" id="hotelTable">
+          <tr>
+            <th colspan="4">Hotel Rates</th>
+          </tr>
+          <tr>
+            <th>Category</th>
+            <th>Unit Range</th>
+            <th>Rate (Rs/kWh)</th>
+            <th>Fixed Charge (Rs)</th>
+          </tr>
+          <tr>
+            <td>H-1</td>
+            <td>≤ 300</td>
+            <td>7.00</td>
+            <td>250.00</td>
+          </tr>
+          <tr>
+            <td>H-1</td>
+            <td>> 300</td>
+            <td>13.00</td>
+            <td>750.00</td>
+          </tr>
+          <tr>
+            <td>H-2 Day</td>
+            <td>All units</td>
+            <td>13.00</td>
+            <td>5,000.00</td>
+          </tr>
+          <tr>
+            <td>H-2 Peak</td>
+            <td>All units</td>
+            <td>23.00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td>H-2 Off-Peak</td>
+            <td>All units</td>
+            <td>11.00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td>H-3 Day</td>
+            <td>All units</td>
+            <td>12.00</td>
+            <td>5,000.00</td>
+          </tr>
+          <tr>
+            <td>H-3 Peak</td>
+            <td>All units</td>
+            <td>22.00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td>H-3 Off-Peak</td>
+            <td>All units</td>
+            <td>10.00</td>
+            <td>-</td>
+          </tr>
+        </table>
+
+        <!-- General Purpose Rate Tables -->
+        <table class="rate-table" id="generalTable">
+          <tr>
+            <th colspan="4">General Purpose Rates</th>
+          </tr>
+          <tr>
+            <th>Category</th>
+            <th>Unit Range</th>
+            <th>Rate (Rs/kWh)</th>
+            <th>Fixed Charge (Rs)</th>
+          </tr>
+          <tr>
+            <td>GP-1</td>
+            <td>≤ 180</td>
+            <td>22.00</td>
+            <td>500.00</td>
+          </tr>
+          <tr>
+            <td>GP-1</td>
+            <td>> 180</td>
+            <td>30.00</td>
+            <td>1,500.00</td>
+          </tr>
+          <tr>
+            <td>GP-2 Day</td>
+            <td>All units</td>
+            <td>34.00</td>
+            <td>5,000.00</td>
+          </tr>
+          <tr>
+            <td>GP-2 Peak</td>
+            <td>All units</td>
+            <td>42.00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td>GP-2 Off-Peak</td>
+            <td>All units</td>
+            <td>27.00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td>GP-3 Day</td>
+            <td>All units</td>
+            <td>33.00</td>
+            <td>5,000.00</td>
+          </tr>
+          <tr>
+            <td>GP-3 Peak</td>
+            <td>All units</td>
+            <td>41.00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td>GP-3 Off-Peak</td>
+            <td>All units</td>
+            <td>26.00</td>
+            <td>-</td>
+          </tr>
+        </table>
+
+        <!-- Government Rate Tables -->
+        <table class="rate-table" id="governmentTable">
+          <tr>
+            <th colspan="4">
+              Government Rates<!-- Continuing from the previous government rate table -->
+            </th>
+          </tr>
+
+          <tr>
+            <th>Category</th>
+            <th>Unit Range</th>
+            <th>Rate (Rs/kWh)</th>
+            <th>Fixed Charge (Rs)</th>
+          </tr>
+          <tr>
+            <td>G-1</td>
+            <td>≤ 180</td>
+            <td>22.00</td>
+            <td>500.00</td>
+          </tr>
+          <tr>
+            <td>G-1</td>
+            <td>> 180</td>
+            <td>30.00</td>
+            <td>1,500.00</td>
+          </tr>
+          <tr>
+            <td>G-2 Day</td>
+            <td>All units</td>
+            <td>34.00</td>
+            <td>5,000.00</td>
+          </tr>
+          <tr>
+            <td>G-2 Peak</td>
+            <td>All units</td>
+            <td>42.00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td>G-2 Off-Peak</td>
+            <td>All units</td>
+            <td>27.00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td>G-3 Day</td>
+            <td>All units</td>
+            <td>33.00</td>
+            <td>5,000.00</td>
+          </tr>
+          <tr>
+            <td>G-3 Peak</td>
+            <td>All units</td>
+            <td>41.00</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td>G-3 Off-Peak</td>
+            <td>All units</td>
+            <td>26.00</td>
+            <td>-</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Result Popup -->
+      <div class="overlay" id="overlay"></div>
+      <div class="result-popup" id="result-popup">
+        <h3>Bill Calculation Result</h3>
+        <p>Units Consumed: <span id="units"></span></p>
+        <p>
+          Total Bill Amount: Rs. <b><span id="bill"></span></b>.00
+        </p>
+        <div id="breakdownDetails"></div>
+        <button onclick="closePopup()">Close</button>
+      </div>
+      <div id="notice-banner" class="notice-banner">
+        <p>🚨 Electricity Tariff Revision – January 2025.</p>
+        <span class="cls-btn" onclick="closeNotice()">&times;</span>
+      </div>
+
+      <div id="datetime"></div>
+    </div>
+
+    <footer>
+      &copy; 2025 Designed By
+      <a href="https://minidushashimal.com">Minidu Shashimal Aluthge</a>. All
+      rights reserved.
+    </footer>
+    <script>
+      let currentStep = 1;
+
+      function showRateTable() {
+        const category = document.getElementById("category").value;
+        const timeBasedInputs = document.getElementById("timeBasedInputs");
+
+        // Hide all rate tables and subcategories first
+        document
+          .querySelectorAll(".rate-table, .subcategory-select")
+          .forEach((element) => {
+            element.classList.remove("active");
+          });
+
+        // Show selected category's rate table
+        if (category) {
+          const tableId = category + "Table";
+          const table = document.getElementById(tableId);
+          if (table) table.classList.add("active");
+        }
+
+        // Show relevant subcategory selector
+        switch (category) {
+          case "industrial":
+            document
+              .getElementById("industrialSubcategory")
+              .classList.add("active");
+            break;
+          case "hotel":
+            document.getElementById("hotelSubcategory").classList.add("active");
+            break;
+          case "general":
+            document
+              .getElementById("generalSubcategory")
+              .classList.add("active");
+            break;
+          case "government":
+            document
+              .getElementById("governmentSubcategory")
+              .classList.add("active");
+            break;
+        }
+
+        // Show/hide time-based inputs for relevant categories
+        const timeBasedCategories = [
+          "domestic-time",
+          "i2",
+          "i3",
+          "h2",
+          "h3",
+          "gp2",
+          "gp3",
+          "g2",
+          "g3",
+        ];
+        const subCategory = getSelectedSubcategory();
+        if (
+          timeBasedCategories.includes(category) ||
+          timeBasedCategories.includes(subCategory)
+        ) {
+          timeBasedInputs.classList.add("active");
+        } else {
+          timeBasedInputs.classList.remove("active");
+        }
+      }
+
+      function getSelectedSubcategory() {
+        const category = document.getElementById("category").value;
+        switch (category) {
+          case "industrial":
+            return document.getElementById("industrialType").value;
+          case "hotel":
+            return document.getElementById("hotelType").value;
+          case "general":
+            return document.getElementById("generalType").value;
+          case "government":
+            return document.getElementById("govType").value;
+          default:
+            return "";
+        }
+      }
+
+      function calculateBill() {
+        const category = document.getElementById("category").value;
+        const subCategory = getSelectedSubcategory();
+        const pmr = parseFloat(document.getElementById("pmr").value);
+        const cmr = parseFloat(document.getElementById("cmr").value);
+
+        if (!validateInputs(pmr, cmr)) return;
+
+        const units = cmr - pmr;
+        let bill = 0;
+        let breakdown = "";
+
+        // Calculate bill based on category
+        switch (category) {
+          case "domestic":
+            bill = calculateDomesticBill(units);
+            break;
+          case "domestic-time":
+            bill = calculateTimeBasedBill(units, 35, 55, 15, 2000);
+            break;
+          case "religious":
+            bill = calculateReligiousBill(units);
+            break;
+          case "industrial":
+            bill = calculateIndustrialBill(units, subCategory);
+            break;
+          case "hotel":
+            bill = calculateHotelBill(units, subCategory);
+            break;
+          case "general":
+            bill = calculateGeneralBill(units, subCategory);
+            break;
+          case "government":
+            bill = calculateGovernmentBill(units, subCategory);
+            break;
+        }
+
+        displayResults(units, bill, breakdown);
+      }
+
+      function calculateDomesticBill(units) {
+        let bill = 0;
+        let breakdown = "";
+
+        if (units <= 30) {
+          bill = units * 4 + 75;
+          breakdown = `${units} units × Rs. 4.00 + Rs. 75.00 (Fixed)`;
+        } else if (units <= 60) {
+          bill = units * 6 + 200;
+          breakdown = `${units} units × Rs. 6.00 + Rs. 200.00 (Fixed)`;
+        } else if (units <= 90) {
+          bill = units * 14 + 400;
+          breakdown = `${units} units × Rs. 14.00 + Rs. 400.00 (Fixed)`;
+        } else if (units <= 120) {
+          bill = units * 20 + 1000;
+          breakdown = `${units} units × Rs. 20.00 + Rs. 1,000.00 (Fixed)`;
+        } else if (units <= 180) {
+          bill = units * 33 + 1500;
+          breakdown = `${units} units × Rs. 33.00 + Rs. 1,500.00 (Fixed)`;
+        } else {
+          bill = units * 52 + 2000;
+          breakdown = `${units} units × Rs. 52.00 + Rs. 2,000.00 (Fixed)`;
+        }
+
+        return { amount: bill, breakdown: breakdown };
+      }
+
+      function calculateReligiousBill(units) {
+        let bill = 0;
+        let breakdown = "";
+
+        if (units <= 30) {
+          bill = units * 4.5 + 75;
+          breakdown = `${units} units × Rs. 4.50 + Rs. 75.00 (Fixed)`;
+        } else if (units <= 90) {
+          bill = units * 4.5 + 200;
+          breakdown = `${units} units × Rs. 4.50 + Rs. 200.00 (Fixed)`;
+        } else if (units <= 120) {
+          bill = units * 6.5 + 300;
+          breakdown = `${units} units × Rs. 6.50 + Rs. 300.00 (Fixed)`;
+        } else if (units <= 180) {
+          bill = units * 15 + 1200;
+          breakdown = `${units} units × Rs. 15.00 + Rs. 1,200.00 (Fixed)`;
+        } else {
+          bill = units * 23 + 1600;
+          breakdown = `${units} units × Rs. 23.00 + Rs. 1,600.00 (Fixed)`;
+        }
+
+        return { amount: bill, breakdown: breakdown };
+      }
+
+      function calculateTimeBasedBill(
+        dayUnits,
+        dayRate,
+        peakRate,
+        offPeakRate,
+        fixedCharge
+      ) {
+        const day = parseFloat(document.getElementById("dayUnits").value) || 0;
+        const peak =
+          parseFloat(document.getElementById("peakUnits").value) || 0;
+        const offPeak =
+          parseFloat(document.getElementById("offPeakUnits").value) || 0;
+
+        const bill =
+          day * dayRate + peak * peakRate + offPeak * offPeakRate + fixedCharge;
+        const breakdown = `
+                Day (${day} units × Rs. ${dayRate}) = Rs. ${day * dayRate}<br>
+                Peak (${peak} units × Rs. ${peakRate}) = Rs. ${
+          peak * peakRate
+        }<br>
+                Off-Peak (${offPeak} units × Rs. ${offPeakRate}) = Rs. ${
+          offPeak * offPeakRate
+        }<br>
+                Fixed Charge = Rs. ${fixedCharge}
+            `;
+
+        return { amount: bill, breakdown: breakdown };
+      }
+
+      function calculateIndustrialBill(units, type) {
+        let result;
+        switch (type) {
+          case "i1":
+            if (units <= 300) {
+              result = {
+                amount: units * 7 + 250,
+                breakdown: `${units} units × Rs. 7.00 + Rs. 250.00 (Fixed)`,
+              };
+            } else {
+              result = {
+                amount: units * 13 + 750,
+                breakdown: `${units} units × Rs. 13.00 + Rs. 750.00 (Fixed)`,
+              };
+            }
+            break;
+          case "i2":
+            result = calculateTimeBasedBill(units, 13, 23, 11, 5000);
+            break;
+          case "i3":
+            result = calculateTimeBasedBill(units, 12, 22, 10, 5000);
+            break;
+        }
+        return result;
+      }
+
+      function calculateHotelBill(units, type) {
+        let result;
+        switch (type) {
+          case "h1":
+            if (units <= 300) {
+              result = {
+                amount: units * 7 + 250,
+                breakdown: `${units} units × Rs. 7.00 + Rs. 250.00 (Fixed)`,
+              };
+            } else {
+              result = {
+                amount: units * 13 + 750,
+                breakdown: `${units} units × Rs. 13.00 + Rs. 750.00 (Fixed)`,
+              };
+            }
+            break;
+          case "h2":
+            result = calculateTimeBasedBill(units, 13, 23, 11, 5000);
+            break;
+          case "h3":
+            result = calculateTimeBasedBill(units, 12, 22, 10, 5000);
+            break;
+        }
+        return result;
+      }
+
+      function calculateGeneralBill(units, type) {
+        let result;
+        switch (type) {
+          case "gp1":
+            if (units <= 180) {
+              result = {
+                amount: units * 22 + 500,
+                breakdown: `${units} units × Rs. 22.00 + Rs. 500.00 (Fixed)`,
+              };
+            } else {
+              result = {
+                amount: units * 30 + 1500,
+                breakdown: `${units} units × Rs. 30.00 + Rs. 1,500.00 (Fixed)`,
+              };
+            }
+            break;
+          case "gp2":
+            result = calculateTimeBasedBill(units, 34, 42, 27, 5000);
+            break;
+          case "gp3":
+            result = calculateTimeBasedBill(units, 33, 41, 26, 5000);
+            break;
+        }
+        return result;
+      }
+
+      function calculateGovernmentBill(units, type) {
+        let result;
+        switch (type) {
+          case "g1":
+            if (units <= 180) {
+              result = {
+                amount: units * 22 + 500,
+                breakdown: `${units} units × Rs. 22.00 + Rs. 500.00 (Fixed)`,
+              };
+            } else {
+              result = {
+                amount: units * 30 + 1500,
+                breakdown: `${units} units × Rs. 30.00 + Rs. 1,500.00 (Fixed)`,
+              };
+            }
+            break;
+          case "g2":
+            result = calculateTimeBasedBill(units, 34, 42, 27, 5000);
+            break;
+          case "g3":
+            result = calculateTimeBasedBill(units, 33, 41, 26, 5000);
+            break;
+        }
+        return result;
+      }
+
+      function validateInputs(pmr, cmr) {
+        if (!pmr || !cmr) {
+          showError("Please fill in both meter readings");
+          return false;
+        }
+
+        if (cmr < pmr) {
+          showError("Current reading cannot be less than previous reading");
+          return false;
+        }
+
+        return true;
+      }
+
+      function displayResults(units, billResult, breakdown) {
+        document.getElementById("units").textContent = units;
+        document.getElementById("bill").textContent =
+          billResult.amount.toFixed(2);
+        document.getElementById(
+          "breakdownDetails"
+        ).innerHTML = `<p style="text-align: left; margin-top: 15px;"><strong>Breakdown:</strong><br>${billResult.breakdown}</p>`;
+        showPopup();
+      }
+
+      // Function to display the error popup with a message
+      function showErrorPopup(message) {
+        const errorPopup = document.createElement("div");
+
+        // Apply styling to the popup
+        errorPopup.style.position = "fixed";
+        errorPopup.style.top = "50%";
+        errorPopup.style.left = "50%";
+        errorPopup.style.transform = "translate(-50%, -50%)";
+        errorPopup.style.backgroundColor = "#f44336"; // Red background for error
+        errorPopup.style.color = "white";
+        errorPopup.style.padding = "20px";
+        errorPopup.style.borderRadius = "8px";
+        errorPopup.style.textAlign = "center";
+        errorPopup.style.zIndex = "1001";
+
+        // Set the message content and close button
+        errorPopup.innerHTML = `
+    <p>${message}</p>
+    <button 
+      style="background-color: white; color: #f44336; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer;" 
+      onclick="closeErrorPopup(this)">
+      Close
+    </button>
+  `;
+
+        // Append the error popup to the body
+        document.body.appendChild(errorPopup);
+      }
+
+      // Function to close the error popup
+      function closeErrorPopup(button) {
+        const errorPopup = button.parentElement;
+        errorPopup.style.display = "none";
+        errorPopup.remove();
+      }
+
+      // Error handling function for validation
+      function showError(message) {
+        showErrorPopup(message); // Use the new error popup function for displaying the message
+      }
+
+      // Popup logic (for your steps)
+      function showPopup() {
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("result-popup").style.display = "block";
+      }
+
+      function closePopup() {
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("result-popup").style.display = "none";
+      }
+
+      function nextStep() {
+        const category = document.getElementById("category").value;
+        if (!category) {
+          showError("Please select a customer category");
+          return;
+        }
+
+        document
+          .getElementById(`step${currentStep}`)
+          .classList.remove("active");
+        currentStep++;
+        document.getElementById(`step${currentStep}`).classList.add("active");
+      }
+
+      function previousStep() {
+        document
+          .getElementById(`step${currentStep}`)
+          .classList.remove("active");
+        currentStep--;
+        document.getElementById(`step${currentStep}`).classList.add("active");
+      }
+
+      // Function to close the notice banner
+      function closeNotice() {
+        const banner = document.getElementById("notice-banner");
+        banner.classList.add("fade-out"); // Add fade-out class
+        setTimeout(function () {
+          banner.style.display = "none"; // Hide the banner after animation
+        }, 500); // Duration matches the fade-out animation time
+      }
+
+      function displayDateTime() {
+        const datetimeElement = document.getElementById("datetime");
+
+        // Get the current date and time
+        const currentDate = new Date();
+
+        // Format the date and time
+        const formattedDate = currentDate.toLocaleString("en-US", {
+          weekday: "long", // Example: "Monday"
+          year: "numeric",
+          month: "long", // Example: "January"
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true, // Use 12-hour format with AM/PM
+        });
+
+        // Set the formatted date and time as the content of the #datetime element
+        datetimeElement.innerHTML = formattedDate;
+      }
+
+      // Call the function to display the date and time
+      displayDateTime();
+
+      // Optionally, you can set an interval to update the time every second
+      setInterval(displayDateTime, 1000);
+    </script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+      import {
+        getMessaging,
+        getToken,
+      } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-messaging.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics.js";
+    
+      const firebaseConfig = {
+        apiKey: "AIzaSyCzzWcVPBcLjhJqutlWREjDon77GcoCqUw",
+        authDomain: "e-bill-calc.firebaseapp.com",
+        projectId: "e-bill-calc",
+        storageBucket: "e-bill-calc.firebasestorage.app",
+        messagingSenderId: "1015140683492",
+        appId: "1:1015140683492:web:e30c58b7572e1e4b7c26f1",
+        measurementId: "G-VW7KSCNPP1",
+      };
+    
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const messaging = getMessaging(app);
+    
+      navigator.serviceWorker.register("sw.js").then((registration) => {
+        getToken(messaging, {
+          serviceWorkerRegistration: registration,
+          vapidKey:
+            "BHSTp7gkJkDxWEFRL3ETtZ1khrVkvs2sSCSG1NWbudslIYqFGJD2aOqcmDN4mYSOX0y48J6SX6j9llBiq0__qkE",
+        })
+          .then((currentToken) => {
+            if (currentToken) {
+              console.log("Token is: " + currentToken);
+            } else {
+              console.log(
+                "No registration token available. Request permission to generate one."
+              );
+            }
+          })
+          .catch((err) => {
+            console.log("An error occurred while retrieving token. ", err);
+          });
+      });
+    </script>
+    
+  </body>
+</html>
