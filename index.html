@@ -1451,48 +1451,7 @@
       // Optionally, you can set an interval to update the time every second
       setInterval(displayDateTime, 1000);
     </script>
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-      import {
-        getMessaging,
-        getToken,
-      } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-messaging.js";
-      import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics.js";
-    
-      const firebaseConfig = {
-        apiKey: "AIzaSyCzzWcVPBcLjhJqutlWREjDon77GcoCqUw",
-        authDomain: "e-bill-calc.firebaseapp.com",
-        projectId: "e-bill-calc",
-        storageBucket: "e-bill-calc.firebasestorage.app",
-        messagingSenderId: "1015140683492",
-        appId: "1:1015140683492:web:e30c58b7572e1e4b7c26f1",
-        measurementId: "G-VW7KSCNPP1",
-      };
-    
-      const app = initializeApp(firebaseConfig);
-      const analytics = getAnalytics(app);
-      const messaging = getMessaging(app);
-    
-      navigator.serviceWorker.register("sw.js").then((registration) => {
-        getToken(messaging, {
-          serviceWorkerRegistration: registration,
-          vapidKey:
-            "BHSTp7gkJkDxWEFRL3ETtZ1khrVkvs2sSCSG1NWbudslIYqFGJD2aOqcmDN4mYSOX0y48J6SX6j9llBiq0__qkE",
-        })
-          .then((currentToken) => {
-            if (currentToken) {
-              console.log("Token is: " + currentToken);
-            } else {
-              console.log(
-                "No registration token available. Request permission to generate one."
-              );
-            }
-          })
-          .catch((err) => {
-            console.log("An error occurred while retrieving token. ", err);
-          });
-      });
-    </script>
+   
     
   </body>
 </html>
